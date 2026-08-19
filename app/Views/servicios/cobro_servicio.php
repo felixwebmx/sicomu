@@ -279,21 +279,15 @@ $(document).ready(function () {
 				if (resp.csrf_hash) { csrfHash = resp.csrf_hash; }
 				
 				if (resp.success) {
-					// Obtenemos el cobro_id real de la respuesta del servidor
 					const idCobro = resp.data.cobro.cobro_id; 
-					
 					alert('Cobro registrado. Folio: ' + resp.data.cobro.numero_folio);
-					
-					// Abrimos la ventana de impresión con la ruta correcta
 					const urlImpresion = '<?= site_url('servicios/cobro/imprimir/') ?>' + idCobro + '?v=1';
 					window.open(urlImpresion, '_blank', 'width=800,height=600');
-					
-					// Recargamos la pantalla para limpiar el formulario
 					location.reload();
 				} else {
 					alert(resp.message);
 				}
-			}
+			},
             error: function (xhr) {
                 if (xhr.responseJSON?.csrf_hash) { csrfHash = xhr.responseJSON.csrf_hash; }
                 const msg = xhr.responseJSON?.message || 'Error al registrar el cobro.';

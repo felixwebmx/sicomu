@@ -59,41 +59,40 @@ class VecinoModel extends Model
      * protegiendo updates parciales (pagos, cancelaciones) de corromper el registro.
      */
     protected function calcularCampos(array $data): array
-    {
-        // Detectar si es insert (no trae 'id') o update (trae 'id')
-        $esInsert = ! isset($data['id']);
+	{
+		$esInsert = ! isset($data['id']);
 
-        // ─── total_aportacion: solo si tenemos ml y costo_ml ───
-        $ml      = isset($data['data']['ml']) ? (float) $data['data']['ml'] : null;
-        $costoMl = isset($data['data']['costo_ml']) ? (float) $data['data']['costo_ml'] : null;
+		// ─── Defaults en insert (ANTES de calcular resto, para que el cálculo los vea) ───
+		if ($esInsert) {
+			if (empty($data['data']['fecha_captura'])) {
+				$data['data']['fecha_captura'] = date('Y-m-d');
+			}
+			if (! isset($data['data']['pagado'])) {
+				$data['data']['pagado'] = 0;
+			}
+			if (! isset($data['data']['ultimo_pago'])) {
+				$data['data']['ultimo_pago'] = 0;
+			}
+		}
 
-        if ($ml !== null && $costoMl !== null) {
-            $data['data']['total_aportacion'] = round($ml * $costoMl, 2);
-        }
+		// ─── total_aportacion: solo si tenemos ml y costo_ml ───
+		$ml      = isset($data['data']['ml']) ? (float) $data['data']['ml'] : null;
+		$costoMl = isset($data['data']['costo_ml']) ? (float) $data['data']['costo_ml'] : null;
 
-        // ─── resto: solo si tenemos pagado y conocemos total_aportacion ───
-        $pagado          = isset($data['data']['pagado']) ? (float) $data['data']['pagado'] : null;
-        $totalAportacion = isset($data['data']['total_aportacion']) ? (float) $data['data']['total_aportacion'] : null;
+		if ($ml !== null && $costoMl !== null) {
+			$data['data']['total_aportacion'] = round($ml * $costoMl, 2);
+		}
 
-        if ($pagado !== null && $totalAportacion !== null) {
-            $data['data']['resto'] = round($totalAportacion - $pagado, 2);
-        }
+		// ─── resto: solo si tenemos pagado y conocemos total_aportacion ───
+		$pagado          = isset($data['data']['pagado']) ? (float) $data['data']['pagado'] : null;
+		$totalAportacion = isset($data['data']['total_aportacion']) ? (float) $data['data']['total_aportacion'] : null;
 
-        // ─── Defaults solo en insert ───
-        if ($esInsert) {
-            if (empty($data['data']['fecha_captura'])) {
-                $data['data']['fecha_captura'] = date('Y-m-d');
-            }
-            if (! isset($data['data']['pagado'])) {
-                $data['data']['pagado'] = 0;
-            }
-            if (! isset($data['data']['ultimo_pago'])) {
-                $data['data']['ultimo_pago'] = 0;
-            }
-        }
+		if ($pagado !== null && $totalAportacion !== null) {
+			$data['data']['resto'] = round($totalAportacion - $pagado, 2);
+		}
 
-        return $data;
-    }
+		return $data;
+	}
 
     public function __construct()
     {

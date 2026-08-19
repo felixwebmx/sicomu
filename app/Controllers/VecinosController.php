@@ -188,25 +188,17 @@ class VecinosController extends BaseController
     /**
      * ELIMINAR
      */
-    public function eliminar(int $id)
-    {
-        $vecino = $this->vecinoModel->find($id);
-
-        if (! $vecino) {
-            return $this->jsonResponse(false, 'Vecino no encontrado.', [], 404);
-        }
-
-        if (! $this->vecinoModel->delete($id)) {
-            return $this->jsonResponse(
-                false,
-                'Error al eliminar el vecino.',
-                $this->vecinoModel->errors(),
-                500
-            );
-        }
-
-        return $this->jsonResponse(true, 'Vecino eliminado correctamente.');
-    }
+	public function eliminar(int $id)
+	{
+		$vecino = $this->vecinoModel->find($id);
+		if (! $vecino) {
+			return redirect()->to('vecinos')->with('error', 'Vecino no encontrado.');
+		}
+		if (! $this->vecinoModel->delete($id)) {
+			return redirect()->to('vecinos')->with('error', 'Error al eliminar el vecino.');
+		}
+		return redirect()->to('vecinos')->with('mensaje', 'Vecino eliminado correctamente.');
+	}
 
     /**
      * AJAX: Obtener datos de obra (costo_x_ml) para cálculo en frontend

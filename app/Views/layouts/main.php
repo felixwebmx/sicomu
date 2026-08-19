@@ -188,20 +188,24 @@ function enviarPost(url, mensajeConfirmacion) {
     if (mensajeConfirmacion && !confirm(mensajeConfirmacion)) {
         return false;
     }
-    
+
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = url;
-    
-    const token = document.querySelector('meta[name="csrf-token"]')?.content;
-    if (token) {
+
+    // Buscamos el meta csrf generado por csrf_meta() por su atributo 'name',
+    // que empieza con 'csrf-' o coincide con el name configurado en Security.php
+    const metaToken = document.querySelector('meta[name="csrf-token"], meta[name="<?= csrf_token() ?>"]');
+    if (metaToken) {
         const input = document.createElement('input');
         input.type = 'hidden';
         input.name = '<?= csrf_token() ?>';
-        input.value = token;
+        input.value = metaToken.content;
         form.appendChild(input);
+    } else {
+        console.error('No se encontró el meta CSRF. Revisa csrf_meta() en el head.');
     }
-    
+
     document.body.appendChild(form);
     form.submit();
     return false;

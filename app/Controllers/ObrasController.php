@@ -117,14 +117,22 @@ class ObrasController extends BaseController
         ];
 
         if ($id) {
-            $this->obraModel->update($id, $datos);
-            session()->setFlashdata('mensaje', 'Obra actualizada correctamente.');
-        } else {
-            $this->obraModel->insert($datos);
-            session()->setFlashdata('mensaje', 'Obra registrada correctamente.');
-        }
+			if (! $this->obraModel->update($id, $datos)) {
+				return redirect()->back()
+					->withInput()
+					->with('errores', $this->obraModel->errors());
+			}
+			session()->setFlashdata('mensaje', 'Obra actualizada correctamente.');
+		} else {
+			if (! $this->obraModel->insert($datos)) {
+				return redirect()->back()
+					->withInput()
+					->with('errores', $this->obraModel->errors());
+			}
+			session()->setFlashdata('mensaje', 'Obra registrada correctamente.');
+		}
 
-        return redirect()->to('obras');
+		return redirect()->to('obras');
     }
 
     public function eliminar(int $id)
