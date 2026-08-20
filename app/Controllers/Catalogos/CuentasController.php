@@ -45,6 +45,7 @@ class CuentasController extends BaseController
         $reglas = [
             'clave_cuenta'  => 'required|max_length[4]',
             'nombre_cuenta' => 'required|max_length[50]',
+			'estatus'     	=> 'required|in_list[0,1]',
         ];
 
         if (! $this->validate($reglas)) {
@@ -54,6 +55,7 @@ class CuentasController extends BaseController
         $data = [
             'clave_cuenta'  => $this->request->getPost('clave_cuenta'),
             'nombre_cuenta' => $this->request->getPost('nombre_cuenta'),
+			'estatus'     	=> $this->request->getPost('estatus'),
         ];
 
         $this->cuentaModel->skipValidation(true);

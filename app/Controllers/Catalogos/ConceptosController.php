@@ -40,35 +40,39 @@ class ConceptosController extends BaseController
     }
 
     public function formulario(?int $id = null)
-    {
-        $concepto = $id !== null ? $this->conceptoModel->find($id) : null;
+	{
+		$concepto = $id !== null ? $this->conceptoModel->find($id) : null;
 
-        if ($id !== null && ! $concepto) {
-            return redirect()->to('catalogos/conceptos')->with('error', 'Concepto no encontrado.');
-        }
+		if ($id !== null && ! $concepto) {
+			return redirect()->to('catalogos/conceptos')->with('error', 'Concepto no encontrado.');
+		}
 
-        $idCuentaPreseleccionada = null;
-        $partidasActuales = [];
-        
-        if ($concepto) {
-            $partida = $this->partidaModel->find($concepto['id_partida']);
-            if ($partida) {
-                $idCuentaPreseleccionada = $partida['id_cuenta'];
-                $partidasActuales = $this->partidaModel->obtenerPorCuenta($idCuentaPreseleccionada);
-            }
-        }
-        
-        $data = [
-            'titulo'                   => $id ? 'Editar Concepto' : 'Nuevo Concepto',
-            'concepto'                 => $concepto,
-            'cuentas'                  => $this->cuentaModel->orderBy('nombre_cuenta', 'ASC')->findAll(),
-            'idCuentaPreseleccionada'  => $idCuentaPreseleccionada,
-            'partidasActuales'         => $partidasActuales,
-            'cuentasSap'               => $this->cuentaSapModel->listar(),
-        ];
+		$idCuentaPreseleccionada = null;
+		$partidasActuales = [];
 
-        return view('catalogos/conceptos/formulario_conceptos', $data);
-    }
+		if ($concepto) {
+			$partida = $this->partidaModel->find($concepto['id_partida']);
+			if ($partida) {
+				$idCuentaPreseleccionada = $partida['id_cuenta'];
+				// Incluye la partida actual aunque esté inactiva (modo edición)
+				$partidasActuales = $this->partidaModel->obtenerPorCuenta(
+					$idCuentaPreseleccionada,
+					$concepto['id_partida']
+				);
+			}
+		}
+
+		$data = [
+			'titulo'                  => $id ? 'Editar Concepto' : 'Nuevo Concepto',
+			'concepto'                => $concepto,
+			'cuentas'                 => $this->cuentaModel->paraSelect($idCuentaPreseleccionada),
+			'idCuentaPreseleccionada' => $idCuentaPreseleccionada,
+			'partidasActuales'        => $partidasActuales,
+			'cuentasSap'              => $this->cuentaSapModel->paraSelect($concepto['cuenta_sap_id'] ?? null),
+		];
+
+		return view('catalogos/conceptos/formulario_conceptos', $data);
+	}
 
     public function guardar(?int $id = null)
     {
@@ -78,6 +82,7 @@ class ConceptosController extends BaseController
             'clave_concepto'  => 'required|is_natural',
             'nombre_concepto' => 'required|max_length[100]',
             'monto_concepto'  => 'required|decimal',
+			'estatus'         => 'required|in_list[0,1]',
         ];
 
         if (! $this->validate($reglas)) {

@@ -50,8 +50,8 @@ class CobroServicioController extends BaseController
         $termino = (string) $this->request->getGet('q');
 
         $conceptos = $this->conceptoModel
-            ->listarConDetalle($termino)
-            ->findAll(20);
+			->listarConDetalle($termino, soloActivos: true)   // ← clave
+			->findAll(20);
 
         $resultados = array_map(static fn ($c) => [
             'id'             => $c['id_concepto'],

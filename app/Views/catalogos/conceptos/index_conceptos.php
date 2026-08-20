@@ -3,13 +3,15 @@
 <?= $this->section('contenido') ?>
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header">
         <h3 class="card-title mb-0"><i class="bi bi-journal-bookmark me-2"></i>Catálogo de Conceptos</h3>
-        <?php if (puede('catalogos.administrar')): ?>
-            <a href="<?= site_url('catalogos/conceptos/nuevo') ?>" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus-lg"></i> Nuevo Concepto
-            </a>
-        <?php endif; ?>
+        <div class="card-tools">
+			<?php if (puede('catalogos.administrar')): ?>
+				<a href="<?= site_url('catalogos/conceptos/nuevo') ?>" class="btn btn-primary btn-sm">
+					<i class="bi bi-plus-lg"></i> Nuevo Concepto
+				</a>
+			<?php endif; ?>
+		</div>
     </div>
 
     <div class="card-body">
@@ -20,6 +22,7 @@
 					<th>Código SAP</th>
                     <th>Clave</th>
                     <th>Concepto</th>
+                    <th>Estatus</th>
                     <th class="text-end">Monto</th>
                     <th class="text-end no-export">Acciones</th>
                 </tr>
@@ -44,6 +47,13 @@
                         <td class="text-end fw-bold text-success" data-order="<?= $c['monto_concepto'] ?>">
                             $<?= number_format((float)$c['monto_concepto'], 2) ?>
                         </td>
+						<td class="text-center">
+							<?php if ($c['estatus'] == 1): ?>
+								<span class="badge text-bg-success">Activo</span>
+							<?php else: ?>
+								<span class="badge text-bg-secondary">Inactivo</span>
+							<?php endif; ?>
+						</td>
                         <td class="text-end no-export">
                             <?php if (puede('catalogos.administrar')): ?>
 								<a href="<?= site_url('catalogos/conceptos/editar/' . $c['id_concepto']) ?>" class="btn btn-outline-warning" title="Editar">

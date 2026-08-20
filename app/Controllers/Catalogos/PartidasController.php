@@ -30,21 +30,21 @@ class PartidasController extends BaseController
     }
 
     public function formulario(?int $id = null)
-    {
-        $partida = $id !== null ? $this->partidaModel->find($id) : null;
+	{
+		$partida = $id !== null ? $this->partidaModel->find($id) : null;
 
-        if ($id !== null && ! $partida) {
-            return redirect()->to('catalogos/partidas')->with('error', 'Partida no encontrada.');
-        }
+		if ($id !== null && ! $partida) {
+			return redirect()->to('catalogos/partidas')->with('error', 'Partida no encontrada.');
+		}
 
-        $data = [
-            'titulo'  => $id ? 'Editar Partida' : 'Nueva Partida',
-            'partida' => $partida,
-            'cuentas' => $this->cuentaModel->orderBy('nombre_cuenta', 'ASC')->findAll(),
-        ];
+		$data = [
+			'titulo'  => $id ? 'Editar Partida' : 'Nueva Partida',
+			'partida' => $partida,
+			'cuentas' => $this->cuentaModel->paraSelect($partida['id_cuenta'] ?? null),
+		];
 
-        return view('catalogos/partidas/formulario_partidas', $data);
-    }
+		return view('catalogos/partidas/formulario_partidas', $data);
+	}
 
     public function guardar(?int $id = null)
     {
@@ -52,6 +52,7 @@ class PartidasController extends BaseController
             'clave_partida'  => 'required|is_natural',
             'nombre_partida' => 'required|max_length[50]',
             'id_cuenta'      => 'required|is_natural_no_zero',
+			'estatus'        => 'required|in_list[0,1]',
         ];
 
         if (! $this->validate($reglas)) {
@@ -87,11 +88,11 @@ class PartidasController extends BaseController
     }
 
     public function porCuentaJson(int $idCuenta)
-    {
-        return $this->response->setJSON(
-            $this->partidaModel->obtenerPorCuenta($idCuenta)
-        );
-    }
+	{
+		return $this->response->setJSON(
+			$this->partidaModel->obtenerPorCuenta($idCuenta) // sin $idActual → solo activas
+		);
+	}
 
     public function siguienteClaveJson(int $idCuenta)
     {

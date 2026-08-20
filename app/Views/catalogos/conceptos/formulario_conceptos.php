@@ -202,6 +202,15 @@
                        maxlength="100"
                        placeholder="Ej: Permiso de Construcción, Recolección de Basura, etc.">
             </div>
+			
+			<div class="col-md-4 mb-3">
+				<label class="form-label">Estatus</label>
+				<select name="estatus" class="form-select" required>
+					<?php $actual = old('estatus', $cuenta['estatus'] ?? '1'); ?>
+					<option value="1" <?= $actual == '1' ? 'selected' : '' ?>>Activo</option>
+					<option value="0" <?= $actual == '0' ? 'selected' : '' ?>>Inactivo</option>
+				</select>
+			</div>
 
             <!-- BOTONES -->
             <div class="d-flex gap-2 mt-4">

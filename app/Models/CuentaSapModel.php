@@ -10,7 +10,9 @@ class CuentaSapModel extends Model
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-	protected $allowedFields    = ['codigo_sap', 'descripcion', 'created_at', 'updated_at', 'deleted_at'];
+	//protected $allowedFields    = ['codigo_sap', 'descripcion', 'created_at', 'updated_at', 'deleted_at'];
+	protected $allowedFields	= ['codigo_sap', 'descripcion', 'estatus', 'created_at', 'updated_at', 'deleted_at'];
+
 
 	// ─── Timestamps & SoftDeletes ───
     protected $useTimestamps = true;
@@ -28,4 +30,15 @@ class CuentaSapModel extends Model
     {
         return $this->orderBy('codigo_sap', 'asc')->findAll();
     }
+	/** Solo para selects: activos + el actual si viene en edición */
+	public function paraSelect(?int $idActual = null): array
+	{
+		$this->groupStart()->where('estatus', 1);
+		if ($idActual) {
+			$this->orWhere('id', $idActual);
+		}
+		$this->groupEnd();
+
+		return $this->orderBy('codigo_sap', 'asc')->findAll();
+	}
 }

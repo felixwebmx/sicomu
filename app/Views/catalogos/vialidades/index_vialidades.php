@@ -3,13 +3,15 @@
 <?= $this->section('contenido') ?>
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header">
         <h3 class="card-title mb-0"><i class="bi bi-signpost me-2"></i>Catálogo de Vialidades</h3>
-        <?php if (puede('catalogos.administrar')): ?>
-            <a href="<?= site_url('catalogos/vialidades/nuevo') ?>" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus-lg"></i> Nueva Vialidad
-            </a>
-        <?php endif; ?>
+		<div class="card-tools">
+			<?php if (puede('catalogos.administrar')): ?>
+				<a href="<?= site_url('catalogos/vialidades/nuevo') ?>" class="btn btn-primary btn-sm">
+					<i class="bi bi-plus-lg"></i> Nueva Vialidad
+				</a>
+			<?php endif; ?>
+		</div>
     </div>
 
     <div class="card-body">

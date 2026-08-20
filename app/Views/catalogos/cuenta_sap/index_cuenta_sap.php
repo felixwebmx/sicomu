@@ -3,17 +3,9 @@
 <?= $this->section('contenido') ?>
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+	<div class="card-header">
         <h3 class="card-title mb-0"><i class="bi bi-upc-scan me-2"></i>Catálogo de SAP</h3>
-        <div class="d-flex gap-2">
-            <form method="get" class="d-flex gap-2">
-                <input type="text" name="q" class="form-control form-control-sm" placeholder="Buscar código o descripción..."
-                       value="<?= esc($busqueda ?? '') ?>" style="min-width: 250px;">
-                <button type="submit" class="btn btn-sm btn-outline-primary"><i class="bi bi-search"></i></button>
-                <?php if ($busqueda): ?>
-                    <a href="<?= site_url('catalogos/sap') ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
-                <?php endif; ?>
-            </form>
+        <div class="card-tools">
             <?php if (puede('catalogos.administrar')): ?>
                 <a href="<?= site_url('catalogos/sap/nuevo') ?>" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-lg"></i> Nuevo
@@ -29,6 +21,7 @@
                     <th>ID</th>
                     <th>Código SAP</th>
                     <th>Descripción</th>
+                    <th>Estatus</th>
                     <th class="text-end no-export">Acciones</th>
                 </tr>
             </thead>
@@ -38,6 +31,13 @@
                         <td><?= esc($s['id']) ?></td>
                         <td><code class="fs-6"><?= esc($s['codigo_sap']) ?></code></td>
                         <td><?= esc($s['descripcion']) ?></td>
+						<td class="text-center">
+							<?php if ($s['estatus'] == 1): ?>
+								<span class="badge text-bg-success">Activo</span>
+							<?php else: ?>
+								<span class="badge text-bg-secondary">Inactivo</span>
+							<?php endif; ?>
+						</td>
                         <td class="text-end no-export">
                             <?php if (puede('catalogos.administrar')): ?>
 								<a href="<?= site_url('catalogos/sap/editar/' . $s['id']) ?>" class="btn btn-outline-warning" title="Editar">

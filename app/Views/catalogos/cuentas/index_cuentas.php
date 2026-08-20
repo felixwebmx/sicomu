@@ -3,14 +3,16 @@
 <?= $this->section('contenido') ?>
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header">
         <h3 class="card-title mb-0"><i class="bi bi-journal-bookmark me-2"></i>Catálogo de Cuentas</h3>
-        <?php if (puede('catalogos.administrar')): ?>
-            <a href="<?= site_url('catalogos/cuentas/nuevo') ?>" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus-lg"></i> Nueva Cuenta
-            </a>
-        <?php endif; ?>
-    </div>
+        <div class="card-tools">
+			<?php if (puede('catalogos.administrar')): ?>
+				<a href="<?= site_url('catalogos/cuentas/nuevo') ?>" class="btn btn-primary btn-sm">
+					<i class="bi bi-plus-lg"></i> Nueva Cuenta
+				</a>
+			<?php endif; ?>
+		</div>
+	</div>
 
     <div class="card-body">
         <table id="tablaCuentas" class="table table-striped table-hover w-100">
@@ -19,6 +21,7 @@
                     <th>ID</th>
                     <th>Clave</th>
                     <th>Nombre</th>
+                    <th>Estatus</th>
                     <th class="text-end no-export">Acciones</th>
                 </tr>
             </thead>
@@ -28,6 +31,13 @@
                         <td><?= esc($c['id_cuenta']) ?></td>
                         <td><code class="fw-bold"><?= esc($c['clave_cuenta']) ?></code></td>
                         <td><?= esc($c['nombre_cuenta']) ?></td>
+						<td class="text-center">
+							<?php if ($c['estatus'] == 1): ?>
+								<span class="badge text-bg-success">Activo</span>
+							<?php else: ?>
+								<span class="badge text-bg-secondary">Inactivo</span>
+							<?php endif; ?>
+						</td>
                         <td class="text-end no-export">
                             <?php if (puede('catalogos.administrar')): ?>
 								<a href="<?= site_url('catalogos/cuentas/editar/' . $c['id_cuenta']) ?>" 

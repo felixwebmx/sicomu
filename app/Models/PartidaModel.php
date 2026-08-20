@@ -12,7 +12,8 @@ class PartidaModel extends Model
     protected $primaryKey       = 'id_partida';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $allowedFields    = ['clave_partida', 'nombre_partida', 'id_cuenta', 'created_at', 'updated_at', 'deleted_at'];
+    //protected $allowedFields    = ['clave_partida', 'nombre_partida', 'id_cuenta', 'created_at', 'updated_at', 'deleted_at'];
+	protected $allowedFields = ['clave_partida', 'nombre_partida', 'id_cuenta', 'estatus', 'created_at', 'updated_at', 'deleted_at'];
 
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
@@ -42,12 +43,17 @@ class PartidaModel extends Model
     /**
      * Partidas de una cuenta específica (para el select en cascada vía AJAX)
      */
-    public function obtenerPorCuenta(int $idCuenta): array
-    {
-        return $this->where('id_cuenta', $idCuenta)
-            ->orderBy('nombre_partida', 'ASC')
-            ->findAll();
-    }
+    public function obtenerPorCuenta(int $idCuenta, ?int $idActual = null): array
+	{
+		$this->where('id_cuenta', $idCuenta)
+			 ->groupStart()->where('estatus', 1);
+		if ($idActual) {
+			$this->orWhere('id_partida', $idActual);
+		}
+		$this->groupEnd();
+
+		return $this->orderBy('nombre_partida', 'ASC')->findAll();
+	}
 
     public function tieneConceptos(int $idPartida): bool
     {
@@ -55,4 +61,6 @@ class PartidaModel extends Model
             ->where('id_partida', $idPartida)
             ->countAllResults() > 0;
     }
+	
+	
 }

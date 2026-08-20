@@ -29,6 +29,14 @@
                            value="<?= esc(old('nombre_cuenta', $cuenta['nombre_cuenta'] ?? '')) ?>" required>
                 </div>
             </div>
+			<div class="col-md-4 mb-3">
+				<label class="form-label">Estatus</label>
+				<select name="estatus" class="form-select" required>
+					<?php $actual = old('estatus', $cuenta['estatus'] ?? '1'); ?>
+					<option value="1" <?= $actual == '1' ? 'selected' : '' ?>>Activo</option>
+					<option value="0" <?= $actual == '0' ? 'selected' : '' ?>>Inactivo</option>
+				</select>
+			</div>
 
             <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Guardar</button>
             <a href="<?= site_url('catalogos/cuentas') ?>" class="btn btn-danger"><i class="bi bi-x-circle me-1"></i> Cancelar</a>

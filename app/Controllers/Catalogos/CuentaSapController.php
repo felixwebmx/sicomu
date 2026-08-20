@@ -56,6 +56,7 @@ class CuentaSapController extends BaseController
         $reglas = [
             'codigo_sap'  => 'required|max_length[20]',
             'descripcion' => 'permit_empty|max_length[100]',
+			'estatus'     => 'required|in_list[0,1]',
         ];
 
         if (! $this->validate($reglas)) {
@@ -65,6 +66,7 @@ class CuentaSapController extends BaseController
         $data = [
             'codigo_sap'  => trim($this->request->getPost('codigo_sap')),
             'descripcion' => trim($this->request->getPost('descripcion')),
+			'estatus'     => $this->request->getPost('estatus'),
         ];
 
         if ($id !== null) {

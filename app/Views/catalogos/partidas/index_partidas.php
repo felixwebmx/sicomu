@@ -3,13 +3,15 @@
 <?= $this->section('contenido') ?>
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header">
         <h3 class="card-title mb-0"><i class="bi bi-journal-bookmark me-2"></i>Catálogo de Partidas</h3>
-        <?php if (puede('catalogos.administrar')): ?>
-            <a href="<?= site_url('catalogos/partidas/nuevo') ?>" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus-lg"></i> Nueva Partida
-            </a>
-        <?php endif; ?>
+        <div class="card-tools">
+			<?php if (puede('catalogos.administrar')): ?>
+				<a href="<?= site_url('catalogos/partidas/nuevo') ?>" class="btn btn-primary btn-sm">
+					<i class="bi bi-plus-lg"></i> Nueva Partida
+				</a>
+			<?php endif; ?>
+		</div>
     </div>
 
     <div class="card-body">
@@ -20,6 +22,7 @@
                     <th>Clave</th>
                     <th>Partida</th>
                     <th>Cuenta</th>
+                    <th>Estatus</th>
                     <th class="text-end no-export">Acciones</th>
                 </tr>
             </thead>
@@ -34,6 +37,13 @@
                                 <i class="bi bi-folder me-1"></i><?= esc($p['nombre_cuenta']) ?>
                             </span>
                         </td>
+						<td class="text-center">
+							<?php if ($p['estatus'] == 1): ?>
+								<span class="badge text-bg-success">Activo</span>
+							<?php else: ?>
+								<span class="badge text-bg-secondary">Inactivo</span>
+							<?php endif; ?>
+						</td>
                         <td class="text-end no-export">
                             <?php if (puede('catalogos.administrar')): ?>
 								<a href="<?= site_url('catalogos/partidas/editar/' . $p['id_partida']) ?>" class="btn btn-outline-warning" title="Editar">
